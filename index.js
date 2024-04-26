@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const cors = require('cors')
 const app = express()
@@ -42,6 +42,14 @@ async function run() {
         res.send(result)
     })
 
+    // load the single data for view details
+    app.get('/allCraft/:id', async(req, res) => {
+      const id = req.params.id;
+      // console.log(id);
+      const query = {_id: new ObjectId(id)}
+      const result = await craftCollection.findOne(query)
+      res.send(result)
+    })
 
     // // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
