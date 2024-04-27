@@ -29,44 +29,81 @@ async function run() {
 
     const craftCollection = client.db('allCraftDB').collection('allCraft')
 
-    app.post('/addCraft', async(req, res) => {
-        const craftItem = req.body;
-        // console.log(craftItem);
-        const result = await craftCollection.insertOne(craftItem)
-        res.send(result)
+    app.post('/addCraft', async (req, res) => {
+      const craftItem = req.body;
+      // console.log(craftItem);
+      const result = await craftCollection.insertOne(craftItem)
+      res.send(result)
     });
 
-    app.get('/allCraft', async(req, res) => {
-        const cursor = craftCollection.find()
-        const result = await cursor.toArray()
-        res.send(result)
+    app.get('/allCraft', async (req, res) => {
+      const cursor = craftCollection.find()
+      const result = await cursor.toArray()
+      res.send(result)
     })
 
     // load the single data for view details
-    app.get('/allCraft/:id', async(req, res) => {
+    app.get('/allCraft/:id', async (req, res) => {
       const id = req.params.id;
       // console.log(id);
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const result = await craftCollection.findOne(query)
       res.send(result)
     })
 
     // load the data based on user creation
-    app.get('/myArtCraft/:email', async(req, res) => {
+    app.get('/myArtCraft/:email', async (req, res) => {
       const email = req.params.email;
       // console.log(email);
-      const query = craftCollection.find({userEmail: email});
+      const query = craftCollection.find({ userEmail: email });
       const result = await query.toArray();
+      res.send(result)
+    })
+    // load single data for update 
+    app.get('/updateItem/:id', async (req, res) => {
+      const id = req.params.id;
+      // console.log(id);
+      const query = { _id: new ObjectId(id) }
+      const result = await craftCollection.findOne(query)
+      res.send(result)
+    })
+    // update item 
+
+    app.patch('/updateItem/:id', async (req, res) => {
+      const id = req.params.id;
+      // console.log(id);
+      const item = req.body;
+      // console.log(item);
+      const query = { _id: new ObjectId(id) }
+      const options = { upsert: true }
+      const updateItem = {
+        $set: {
+          item_name: item.item_name,
+          sub_category: item.sub_category,
+          image: item.image,
+          price: item.price,
+          rating: item.rating,
+          customization: item.customization,
+          description: item.description,
+          stockStatus: item.stockStatus,
+          processingTime: item.processingTime,
+          userEmail: item.userEmail,
+          userName: item.userName
+        }
+      }
+      const result = await craftCollection.updateOne(query, updateItem, options)
       res.send(result)
     })
 
     // delete a item from database 
-    app.delete('/myArtCraft/:id', async(req, res) => {
+    app.delete('/myArtCraft/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const result = await craftCollection.deleteOne(query)
       res.send(result)
     })
+
+
     // // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     // console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -78,8 +115,8 @@ async function run() {
 run().catch(console.dir);
 
 app.get('/', (req, res) => {
-    res.send('Palette of Bengal server is running')
+  res.send('Palette of Bengal server is running')
 })
 app.listen(port, () => {
-    console.log(`Palette of Bengal server is running on port: ${port}`);
+  console.log(`Palette of Bengal server is running on port: ${port}`);
 })
