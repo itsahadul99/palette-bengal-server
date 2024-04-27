@@ -51,6 +51,16 @@ async function run() {
       res.send(result)
     })
 
+
+    // load the data based on user creation
+    app.get('/myArtCraft/:email', async(req, res) => {
+      const email = req.params.email;
+      // console.log(email);
+      const query = craftCollection.find({userEmail: email});
+      const result = await query.toArray();
+      res.send(result)
+    })
+
     // // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     // console.log("Pinged your deployment. You successfully connected to MongoDB!");
