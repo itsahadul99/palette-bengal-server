@@ -51,7 +51,6 @@ async function run() {
       res.send(result)
     })
 
-
     // load the data based on user creation
     app.get('/myArtCraft/:email', async(req, res) => {
       const email = req.params.email;
@@ -61,6 +60,13 @@ async function run() {
       res.send(result)
     })
 
+    // delete a item from database 
+    app.delete('/myArtCraft/:id', async(req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await craftCollection.deleteOne(query)
+      res.send(result)
+    })
     // // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     // console.log("Pinged your deployment. You successfully connected to MongoDB!");
