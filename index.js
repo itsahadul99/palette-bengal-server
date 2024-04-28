@@ -28,7 +28,7 @@ async function run() {
     // await client.connect();
 
     const craftCollection = client.db('allCraftDB').collection('allCraft')
-
+    
     app.post('/addCraft', async (req, res) => {
       const craftItem = req.body;
       // console.log(craftItem);
@@ -59,6 +59,7 @@ async function run() {
       const result = await query.toArray();
       res.send(result)
     })
+    
     // load single data for update 
     app.get('/updateItem/:id', async (req, res) => {
       const id = req.params.id;
@@ -103,7 +104,20 @@ async function run() {
       res.send(result)
     })
 
-
+    const categoryCollection = client.db('allCraftDB').collection('allCategories');
+    app.get('/allCategories', async(req, res) => {
+      const cursor = categoryCollection.find()
+      const result = await cursor.toArray()
+      res.send(result)
+    })
+    
+    app.get('/allCategories/:sub_categoryname', async(req, res) => {
+      const sub_category = req.params.sub_categoryname;
+      // console.log(sub_category);
+      const query = categoryCollection.find({sub_categoryname: sub_category})
+      const result = await query.toArray()
+      res.send(result)
+    })
     // // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     // console.log("Pinged your deployment. You successfully connected to MongoDB!");
